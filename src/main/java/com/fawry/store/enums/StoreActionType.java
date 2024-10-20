@@ -1,6 +1,6 @@
 package com.fawry.store.enums;
 
-public enum StoreHistoryActionType {
+public enum StoreActionType {
     ADD,
     CONSUME
 }
