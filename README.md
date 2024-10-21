@@ -154,11 +154,12 @@ Add a new stock item to the store's inventory.
     ```
 
   | Field       | Type | Description                      |
-      |-------------|------|----------------------------------|
+  |-------------|------|----------------------------------|
   | `id`        | Long | Unique identifier for the stock. |
   | `storeId`   | Long | The ID of the store.             |
   | `productId` | Long | The ID of the store.             |
-  | `quantity`  | Long | The quantity of stock to add.|
+  | `quantity`  | Long | The quantity of stock to add.    |
+
 
 #### Error Response
 
