@@ -168,8 +168,8 @@ Add a new stock item to the store's inventory.
 - **Body:**
     ```json
     {
-      "code": 400,
-      "status": "Bad Request",
+      "code": 404,
+      "status": "Not Found",
       "timestamp": "2024-10-21 03:28:03 PM",
       "message": "Store not found"
     }
