@@ -1,15 +1,16 @@
 package com.fawry.store.controllers;
 
-import com.fawry.store.dtos.StockDto;
-import com.fawry.store.dtos.StockRequestDto;
+import com.fawry.store.dtos.ProductConsumptionDto;
 import com.fawry.store.dtos.StoreDto;
 import com.fawry.store.entities.Store;
-import com.fawry.store.services.stock.StockService;
+import com.fawry.store.services.consmption.ConsumptionService;
 import com.fawry.store.services.store.StoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("stores")
@@ -17,7 +18,17 @@ import org.springframework.web.bind.annotation.*;
 public class StoreController {
 
     private final StoreService storeService;
-    private final StockService stockService;
+    private final ConsumptionService consumptionService;
+
+    @GetMapping
+    public List<StoreDto> getAllStores() {
+        return storeService.getAllStores();
+    }
+
+    @GetMapping("/{id}")
+    public Store getStoreById(@PathVariable Long id) {
+        return storeService.getStoreById(id);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -25,10 +36,11 @@ public class StoreController {
         return storeService.createStore(store);
     }
 
-    @PostMapping("/{storeId}/products/{productId}/stock")
-    @ResponseStatus(HttpStatus.CREATED)
-    public StockDto addStockToProduct(@PathVariable Long storeId, @PathVariable Long productId, @Valid @RequestBody StockRequestDto stockDto) {
-        return stockService.addProductToStock(storeId, productId, stockDto);
+    @GetMapping("/{storeId}/products/{productId}/history")
+    public ProductConsumptionDto getProductStockHistory(@PathVariable Long storeId, @PathVariable Long productId) {
+        return consumptionService.getProductConsumptionFromStore(storeId, productId);
     }
+
+    // TODO: handle product search feature
 
 }

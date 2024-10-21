@@ -8,12 +8,22 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final StoreMapper storeMapper;
+
+    @Override
+    public List<StoreDto> getAllStores() {
+        return storeRepository.findAll()
+                .stream()
+                .map(storeMapper::toDto)
+                .toList();
+    }
 
     @Override
     public Store getStoreById(Long id) {

@@ -19,7 +19,7 @@ public class StoreHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
     @Column(nullable = false)
@@ -30,8 +30,7 @@ public class StoreHistory {
     @Column(nullable = false)
     private StoreActionType actionType;
     @Column(nullable = false)
-    private Long quantityChanged;
-    @CreatedDate
+    private int quantityChanged;
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }

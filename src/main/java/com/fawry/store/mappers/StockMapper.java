@@ -11,7 +11,8 @@ public interface StockMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "store", source = "store")
     @Mapping(target = "productId", source = "productId")
-    Stock toEntity(Long id, Long productId, Store store);
+    @Mapping(target = "quantity", source = "quantity")
+    Stock toEntity(Long id, int quantity, Long productId, Store store);
     @Mapping(target = "storeId", source = "store.id")
     StockDto toDto(Stock entity);
 }
