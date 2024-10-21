@@ -33,7 +33,7 @@ public class StoreServiceImpl implements StoreService {
     public Store createStore(StoreDto store) {
         boolean isStoreExists = checkStoreExists(store.name(), store.location());
         if (isStoreExists) {
-            throw new EntityNotFoundException("Store already exists");
+            throw new IllegalArgumentException("Store already exists");
         }
         Store newStore = storeMapper.toEntity(store);
         return storeRepository.save(newStore);
