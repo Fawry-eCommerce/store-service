@@ -11,12 +11,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "stock", indexes = {
+        @Index(name = "idx_product_id", columnList = "productId"),
+        @Index(name = "idx_store_id", columnList = "store_id")
+})
 public class Stock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
+    @Column(nullable = false)
     private Long productId;
+    @Column(nullable = false)
     private Long quantity;
 }

@@ -16,6 +16,13 @@ public class StoreServiceImpl implements StoreService {
     private final StoreMapper storeMapper;
 
     @Override
+    public Store getStoreById(Long id) {
+        return storeRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Store not found")
+        );
+    }
+
+    @Override
     public Store getStoreByName(String name) {
         return storeRepository.getStoreByName(name).orElseThrow(
                 () -> new EntityNotFoundException("Store not found")
@@ -26,7 +33,7 @@ public class StoreServiceImpl implements StoreService {
     public Store createStore(StoreDto store) {
         boolean isStoreExists = checkStoreExists(store.name(), store.location());
         if (isStoreExists) {
-            throw new IllegalArgumentException("Store already exists");
+            throw new EntityNotFoundException("Store already exists");
         }
         Store newStore = storeMapper.toEntity(store);
         return storeRepository.save(newStore);

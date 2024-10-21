@@ -26,7 +26,7 @@
 
 ## Create Store
 
-### `POST /store`
+### `POST /stores`
 
 Creates a new store with the specified name and location.
 
@@ -112,3 +112,101 @@ Creates a new store with the specified name and location.
   "location": "123 Main Street, Springfield"
 }
 ```
+
+---
+
+### `POST /stores/add-stock`
+
+Add a new stock item to the store's inventory.
+
+### Request
+
+- **Content-Type:** `application/json`
+- **Body:**
+    ```json
+    {
+      "storeId": "Long",
+      "productId": "Long",
+      "quantity": "Long"
+    }
+    ```
+
+  | Field       | Type | Description            |
+    |-------------|------|------------------------|
+  | `storeId`   | Long | The ID of the store.   |
+  | `productId` | Long | The ID of the product. |
+  | `quantity`  | Long | The quantity of stock to add.|
+
+### Response
+
+#### Success Response
+
+- **Status Code:** `200 Success`
+- **Content-Type:** `application/json`
+ **Body:**
+    ```json
+    {
+      "id": "Long",
+      "storeId": "Long",
+      "productId": "Long",
+      "quantity": "Long"
+    }
+    ```
+
+  | Field       | Type | Description                      |
+      |-------------|------|----------------------------------|
+  | `id`        | Long | Unique identifier for the stock. |
+  | `storeId`   | Long | The ID of the store.             |
+  | `productId` | Long | The ID of the store.             |
+  | `quantity`  | Long | The quantity of stock to add.|
+
+#### Error Response
+
+- **Status Code:** `400 Bad Request`
+- **Content-Type:** `application/json`
+- **Body:**
+    ```json
+    {
+      "code": 400,
+      "status": "Bad Request",
+      "timestamp": "2024-10-21 03:28:03 PM",
+      "message": "Store not found"
+    }
+    ```
+- **Description:** Returned when the input store doesn't exist.
+
+    ```json
+    {
+      "code": 400,
+      "status": "Bad Request",
+      "timestamp": "2024-10-21 03:28:45 PM",
+      "errors": {
+          "storeId": "Store id is required"
+      }
+    }
+    ```
+- **Description:** Returned when the input data is missing or invalid.
+
+### Example
+
+#### Request:
+```json
+{
+  "storeId": 1,
+  "productId": 548,
+  "quantity": 25
+}
+```
+
+#### Response:
+```json
+{
+  "id": 2,
+  "storeId": 1,
+  "productId": 548,
+  "quantity": 25
+}
+```
+
+---
+
