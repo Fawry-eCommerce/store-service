@@ -160,6 +160,7 @@ Add a new stock item to the store's inventory.
   | `productId` | Long | The ID of the store.             |
   | `quantity`  | Long | The quantity of stock to add.    |
 
+
 #### Error Response
 
 - **Status Code:** `400 Bad Request`
