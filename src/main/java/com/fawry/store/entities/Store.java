@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -19,4 +21,9 @@ public class Store {
     private String name;
     @Column(nullable = false)
     private String location;
+
+    @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<Stock> stocks;
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StoreHistory> storeHistories;
 }

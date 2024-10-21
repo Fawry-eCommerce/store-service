@@ -1,14 +1,12 @@
 package com.fawry.store.controllers;
 
-import com.fawry.store.dtos.ProductConsumptionDto;
+import com.fawry.store.dtos.StoreHistoryDto;
 import com.fawry.store.services.consmption.ConsumptionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("consumptions")
@@ -18,13 +16,18 @@ public class ConsumptionController {
     private final ConsumptionService consumptionService;
 
     @GetMapping
-    public List<ProductConsumptionDto> getAllProductConsumptions() {
-        return consumptionService.getAllProductConsumptions();
+    public Page<StoreHistoryDto> getAllProductConsumptions(Pageable pageable) {
+        return consumptionService.getAllProductConsumptions(pageable);
     }
 
-    @GetMapping("/{storeId}")
-    public List<ProductConsumptionDto> getProductConsumptionByStoreId(@PathVariable Long storeId) {
-        return consumptionService.getProductConsumptionByStoreId(storeId);
+    @GetMapping("{storeId}")
+    public Page<StoreHistoryDto> getProductConsumptionByStoreId(Pageable pageable, @PathVariable Long storeId) {
+        return consumptionService.getProductConsumptionByStoreId(pageable, storeId);
+    }
+
+    @GetMapping("{storeId}/products/{productId}/history")
+    public Page<StoreHistoryDto> getStockHistoryForProduct(Pageable pageable, @PathVariable Long storeId, @PathVariable Long productId) {
+        return consumptionService.getStockHistoryForProduct(pageable, productId, storeId);
     }
 
 }

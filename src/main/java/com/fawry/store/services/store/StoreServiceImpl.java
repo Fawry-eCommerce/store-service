@@ -1,14 +1,16 @@
 package com.fawry.store.services.store;
 
+import com.fawry.store.enums.Messages;
 import com.fawry.store.dtos.StoreDto;
 import com.fawry.store.entities.Store;
 import com.fawry.store.mappers.StoreMapper;
 import com.fawry.store.repositories.StoreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,35 +20,42 @@ public class StoreServiceImpl implements StoreService {
     private final StoreMapper storeMapper;
 
     @Override
-    public List<StoreDto> getAllStores() {
-        return storeRepository.findAll()
-                .stream()
-                .map(storeMapper::toDto)
-                .toList();
+    public Page<StoreDto> getAllStores(Pageable pageable) {
+        return storeRepository.findAll(pageable).map(storeMapper::toDto);
     }
 
     @Override
-    public Store getStoreById(Long id) {
+    public Store getStore(Long id) {
         return storeRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Store not found")
+                () -> new EntityNotFoundException(Messages.STORE_NOT_FOUND.getMessage())
         );
     }
 
     @Override
-    public Store getStoreByName(String name) {
-        return storeRepository.getStoreByName(name).orElseThrow(
-                () -> new EntityNotFoundException("Store not found")
-        );
+    public StoreDto getStoreById(Long id) {
+        return storeMapper.toDto(getStore(id));
     }
 
     @Override
-    public Store createStore(StoreDto store) {
-        boolean isStoreExists = checkStoreExists(store.name(), store.location());
+    public StoreDto createStore(Store store) {
+        boolean isStoreExists = checkStoreExists(store.getName(), store.getLocation());
         if (isStoreExists) {
-            throw new IllegalArgumentException("Store already exists");
+            throw new IllegalArgumentException(Messages.STORE_ALREADY_EXISTS.getMessage());
         }
-        Store newStore = storeMapper.toEntity(store);
-        return storeRepository.save(newStore);
+        return storeMapper.toDto(storeRepository.save(store));
+    }
+
+    @Override
+    public StoreDto updateStore(Long id, Store store) {
+        Store existingStore = getStore(id);
+        existingStore.setName(store.getName());
+        existingStore.setLocation(store.getLocation());
+        return storeMapper.toDto(storeRepository.save(existingStore));
+    }
+
+    @Override
+    public void deleteStore(Long id) {
+        storeRepository.delete(getStore(id));
     }
 
     @Override

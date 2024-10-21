@@ -1,16 +1,15 @@
 package com.fawry.store.controllers;
 
-import com.fawry.store.dtos.ProductConsumptionDto;
 import com.fawry.store.dtos.StoreDto;
 import com.fawry.store.entities.Store;
-import com.fawry.store.services.consmption.ConsumptionService;
 import com.fawry.store.services.store.StoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("stores")
@@ -18,27 +17,31 @@ import java.util.List;
 public class StoreController {
 
     private final StoreService storeService;
-    private final ConsumptionService consumptionService;
 
     @GetMapping
-    public List<StoreDto> getAllStores() {
-        return storeService.getAllStores();
+    public Page<StoreDto> getAllStores(Pageable pageable) {
+        return storeService.getAllStores(pageable);
     }
 
-    @GetMapping("/{id}")
-    public Store getStoreById(@PathVariable Long id) {
+    @GetMapping("{id}")
+    public StoreDto getStoreById(@PathVariable Long id) {
         return storeService.getStoreById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Store createStore(@Valid @RequestBody StoreDto store) {
+    public StoreDto createStore(@Valid @RequestBody Store store) {
         return storeService.createStore(store);
     }
 
-    @GetMapping("/{storeId}/products/{productId}/history")
-    public ProductConsumptionDto getProductStockHistory(@PathVariable Long storeId, @PathVariable Long productId) {
-        return consumptionService.getProductConsumptionFromStore(storeId, productId);
+    @PutMapping("{id}")
+    public StoreDto updateStore(@PathVariable Long id, @Valid @RequestBody Store store) {
+        return storeService.updateStore(id, store);
+    }
+
+    @DeleteMapping("{id}")
+    public void deleteStore(@PathVariable Long id) {
+        storeService.deleteStore(id);
     }
 
     // TODO: handle product search feature

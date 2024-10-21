@@ -1,5 +1,6 @@
 package com.fawry.store.controllers;
 
+import com.fawry.store.dtos.ConsumptionRequestDto;
 import com.fawry.store.dtos.StockDto;
 import com.fawry.store.services.stock.StockService;
 import jakarta.validation.Valid;
@@ -16,8 +17,13 @@ public class StockController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StockDto addStockToProduct(@Valid @RequestBody StockDto stockDto) {
-        return stockService.addProductToStock(stockDto);
+    public StockDto addStockToProduct(@RequestHeader String consumerEmail, @Valid @RequestBody StockDto stockDto) {
+        return stockService.addProductToStock(consumerEmail, stockDto);
+    }
+
+    @PostMapping("consume")
+    public void consumeProduct(@RequestBody ConsumptionRequestDto consumptionRequestDto) {
+        stockService.consumeProduct(consumptionRequestDto);
     }
 
 }

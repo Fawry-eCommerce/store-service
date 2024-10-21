@@ -70,6 +70,11 @@ public class CustomExceptionHandler {
         return generateExceptionResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ExceptionMessage> handleInsufficientStockException(InsufficientStockException e) {
+        return generateExceptionResponseEntity(e, HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<ExceptionMessage> generateExceptionResponseEntity(Exception e, HttpStatus status) {
         ExceptionMessage errorBody = new ExceptionMessage(
                 status.value(),

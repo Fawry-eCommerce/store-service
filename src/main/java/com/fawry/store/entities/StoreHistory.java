@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +19,7 @@ public class StoreHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "store_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Store store;
     @Column(nullable = false)
     private String consumerEmail;

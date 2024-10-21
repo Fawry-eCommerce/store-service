@@ -1,13 +1,15 @@
 package com.fawry.store.services.consmption;
 
-import com.fawry.store.dtos.ProductConsumptionDto;
-import com.fawry.store.entities.StoreHistory;
+import com.fawry.store.dtos.ConsumptionRequestDto;
+import com.fawry.store.dtos.StoreHistoryDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 public interface ConsumptionService {
-    void consumeProduct(StoreHistory storeHistory);
-    List<ProductConsumptionDto> getAllProductConsumptions();
-    List<ProductConsumptionDto> getProductConsumptionByStoreId(Long storeId);
-    ProductConsumptionDto getProductConsumptionFromStore(Long productId, Long storeId);
+    void consumeProduct(ConsumptionRequestDto consumptionRequestDto);
+    void addProductConsumption(ConsumptionRequestDto consumptionRequestDto);
+    Page<StoreHistoryDto> getAllProductConsumptions(Pageable pageable);
+    Page<StoreHistoryDto> getProductConsumptionByStoreId(Pageable pageable, Long storeId);
+    Page<StoreHistoryDto> getStockHistoryForProduct(Pageable pageable, Long productId, Long storeId);
 }

@@ -211,3 +211,4 @@ Add a new stock item to the store's inventory.
 
 ---
 
+# I'm feeling too lazy to write the API docs right now. I'll do it tomorrow, hopefully. 😅

@@ -1,11 +1,12 @@
 package com.fawry.store.services.stock;
 
 import com.fawry.store.clients.productclient.ProductClient;
+import com.fawry.store.dtos.ConsumptionRequestDto;
+import com.fawry.store.enums.Messages;
 import com.fawry.store.dtos.StockDto;
 import com.fawry.store.entities.Stock;
 import com.fawry.store.entities.Store;
-import com.fawry.store.entities.StoreHistory;
-import com.fawry.store.enums.StoreActionType;
+import com.fawry.store.exception.InsufficientStockException;
 import com.fawry.store.mappers.StockMapper;
 import com.fawry.store.repositories.StockRepository;
 import com.fawry.store.services.consmption.ConsumptionService;
@@ -15,7 +16,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -28,38 +28,68 @@ public class StockServiceImpl implements StockService {
     private final ConsumptionService consumptionService;
 
     @Override
+    public void saveStock(Stock stock) {
+        stockRepository.save(stock);
+    }
+
+    @Override
     @Transactional
-    public StockDto addProductToStock(StockDto stockDto) {
-        validateProductExists(stockDto.productId());
-        Store store = storeService.getStoreById(stockDto.storeId());
-        Stock stock = stockRepository.findByProductIdAndStoreId(stockDto.productId(), stockDto.storeId());
+    public StockDto addProductToStock(String consumerEmail, StockDto stockDto) {
+        validateProductExists(stockDto.getProductId());
+        Store store = storeService.getStore(stockDto.getStoreId());
+        Stock stock = stockRepository.findByProductIdAndStoreId(stockDto.getProductId(), stockDto.getStoreId());
         if (stock != null) {
-            stock.setQuantity(stock.getQuantity() + stockDto.quantity());
+            stock.setQuantity(stock.getQuantity() + stockDto.getQuantity());
             stock = stockRepository.save(stock);
         } else {
-            stock = stockRepository.save(stockMapper.toEntity(0L, stockDto.quantity(), stockDto.productId(), store));
+            stock = stockRepository.save(stockMapper.toEntity(stockDto, store));
         }
-        recordConsumption(stock.getProductId(), stock.getQuantity(), store);
+        consumptionService.addProductConsumption(
+                ConsumptionRequestDto.builder()
+                        .storeId(store.getId())
+                        .productId(stock.getProductId())
+                        .quantity(stock.getQuantity())
+                        .consumerEmail(consumerEmail)
+                        .build()
+        );
         return stockMapper.toDto(stock);
+    }
+
+    @Override
+    public void checkProductStock(Long productId, Long storeId, int quantity) {
+        Stock stock = stockRepository.findByProductIdAndStoreId(productId, storeId);
+        if (stock == null || stock.getQuantity() == 0) {
+            throw new EntityNotFoundException(Messages.PRODUCT_OUT_OF_STOCK.getMessage());
+        }
+        if (stock.getQuantity() < quantity) {
+            throw new InsufficientStockException(Messages.INSUFFICIENT_STOCK.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void consumeProduct(ConsumptionRequestDto consumptionRequestDto) {
+        checkProductStock(
+                consumptionRequestDto.productId(),
+                consumptionRequestDto.storeId(),
+                consumptionRequestDto.quantity()
+        );
+        Stock stock = getStockByProductIdAndStoreId(consumptionRequestDto.productId(), consumptionRequestDto.storeId());
+        stock.setQuantity(stock.getQuantity() - consumptionRequestDto.quantity());
+        consumptionService.consumeProduct(consumptionRequestDto);
+        saveStock(stock);
+    }
+
+    @Override
+    public Stock getStockByProductIdAndStoreId(Long productId, Long storeId) {
+        return stockRepository.findByProductIdAndStoreId(productId, storeId);
     }
 
     private void validateProductExists(Long productId) {
         boolean isProductExists = productClient.checkProductExists(productId);
         if (!isProductExists) {
-            throw new EntityNotFoundException("Product does not exist");
+            throw new EntityNotFoundException(Messages.PRODUCT_NOT_FOUND.getMessage());
         }
     }
 
-    private void recordConsumption(Long productId, int quantity, Store store) {
-        consumptionService.consumeProduct(
-                StoreHistory.builder()
-                        .productId(productId)
-                        .store(store)
-                        .quantityChanged(quantity)
-                        .actionType(StoreActionType.ADD)
-                        .consumerEmail("kortam@gmail.com") // TODO: get from logged in admin user
-                        .createdAt(LocalDateTime.now())
-                        .build()
-        );
-    }
 }
