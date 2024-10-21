@@ -25,5 +25,5 @@ public class Stock {
     @Column(nullable = false)
     private Long productId;
     @Column(nullable = false)
-    private Long quantity;
+    private int quantity;
 }
