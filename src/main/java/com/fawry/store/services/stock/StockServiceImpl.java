@@ -2,6 +2,7 @@ package com.fawry.store.services.stock;
 
 import com.fawry.store.clients.productclient.ProductClient;
 import com.fawry.store.dtos.StockDto;
+import com.fawry.store.dtos.StockRequestDto;
 import com.fawry.store.entities.Stock;
 import com.fawry.store.entities.Store;
 import com.fawry.store.entities.StoreHistory;
@@ -29,15 +30,15 @@ public class StockServiceImpl implements StockService {
 
     @Override
     @Transactional
-    public StockDto addProductToStock(StockDto stockDto) {
-        validateProductExists(stockDto.productId());
-        Store store = storeService.getStoreById(stockDto.storeId());
-        Stock stock = stockRepository.findByProductIdAndStoreId(stockDto.productId(), stockDto.storeId());
+    public StockDto addProductToStock(Long storeId, Long productId, StockRequestDto stockDto) {
+        validateProductExists(productId);
+        Store store = storeService.getStoreById(storeId);
+        Stock stock = stockRepository.findByProductIdAndStoreId(productId, storeId);
         if (stock != null) {
             stock.setQuantity(stock.getQuantity() + stockDto.quantity());
             stock = stockRepository.save(stock);
         } else {
-            stock = stockRepository.save(stockMapper.toEntity(stockDto, store));
+            stock = stockRepository.save(stockMapper.toEntity(0L, productId, store));
         }
         recordConsumption(stock.getProductId(), stock.getQuantity(), store);
         return stockMapper.toDto(stock);

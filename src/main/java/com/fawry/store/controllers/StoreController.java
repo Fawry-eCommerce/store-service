@@ -1,6 +1,7 @@
 package com.fawry.store.controllers;
 
 import com.fawry.store.dtos.StockDto;
+import com.fawry.store.dtos.StockRequestDto;
 import com.fawry.store.dtos.StoreDto;
 import com.fawry.store.entities.Store;
 import com.fawry.store.services.stock.StockService;
@@ -24,9 +25,10 @@ public class StoreController {
         return storeService.createStore(store);
     }
 
-    @PostMapping("add-stock")
-    public StockDto addStockToProduct(@Valid @RequestBody StockDto stockDto) {
-        return stockService.addProductToStock(stockDto);
+    @PostMapping("/{storeId}/products/{productId}/stock")
+    @ResponseStatus(HttpStatus.CREATED)
+    public StockDto addStockToProduct(@PathVariable Long storeId, @PathVariable Long productId, @Valid @RequestBody StockRequestDto stockDto) {
+        return stockService.addProductToStock(storeId, productId, stockDto);
     }
 
 }
