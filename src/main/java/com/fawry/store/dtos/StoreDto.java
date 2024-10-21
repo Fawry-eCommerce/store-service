@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record StoreDto(
-        Long id,
+        Long storeId,
         @NotBlank(message = "Store name required.")
         String name,
         @NotBlank(message = "Store location required.")
