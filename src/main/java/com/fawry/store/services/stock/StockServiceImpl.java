@@ -2,15 +2,15 @@ package com.fawry.store.services.stock;
 
 import com.fawry.store.clients.ProductClient;
 import com.fawry.store.dtos.ConsumptionRequestDto;
-import com.fawry.store.enums.Messages;
 import com.fawry.store.dtos.StockDto;
 import com.fawry.store.entities.Stock;
 import com.fawry.store.entities.Store;
-import com.fawry.store.exception.InsufficientStockException;
+import com.fawry.store.enums.Messages;
 import com.fawry.store.mappers.StockMapper;
 import com.fawry.store.repositories.StockRepository;
 import com.fawry.store.services.consmption.ConsumptionService;
 import com.fawry.store.services.store.StoreService;
+import com.fawry.store.utils.StockUtils;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +38,12 @@ public class StockServiceImpl implements StockService {
         validateProductExists(stockDto.getProductId());
         Store store = storeService.getStore(stockDto.getStoreId());
         Stock stock = stockRepository.findByProductIdAndStoreId(stockDto.getProductId(), stockDto.getStoreId());
-        if (stock != null) {
-            stock.setQuantity(stock.getQuantity() + stockDto.getQuantity());
-            stock = stockRepository.save(stock);
+        if (stock == null) {
+            stock = stockMapper.toEntity(stockDto, store);
         } else {
-            stock = stockRepository.save(stockMapper.toEntity(stockDto, store));
+            stock.setQuantity(stock.getQuantity() + stockDto.getQuantity());
         }
+        stock = stockRepository.save(stock);
         consumptionService.addProductConsumption(
                 ConsumptionRequestDto.builder()
                         .storeId(store.getId())
@@ -58,12 +58,7 @@ public class StockServiceImpl implements StockService {
     @Override
     public void checkProductStock(Long productId, Long storeId, int quantity) {
         Stock stock = stockRepository.findByProductIdAndStoreId(productId, storeId);
-        if (stock == null || stock.getQuantity() == 0) {
-            throw new EntityNotFoundException(Messages.PRODUCT_OUT_OF_STOCK.getMessage());
-        }
-        if (stock.getQuantity() < quantity) {
-            throw new InsufficientStockException(Messages.INSUFFICIENT_STOCK.getMessage());
-        }
+        StockUtils.validateStock(stock, quantity);
     }
 
     @Override
@@ -76,8 +71,9 @@ public class StockServiceImpl implements StockService {
         );
         Stock stock = getStockByProductIdAndStoreId(consumptionRequestDto.productId(), consumptionRequestDto.storeId());
         stock.setQuantity(stock.getQuantity() - consumptionRequestDto.quantity());
-        consumptionService.consumeProduct(consumptionRequestDto);
         saveStock(stock);
+
+        consumptionService.consumeProduct(consumptionRequestDto);
     }
 
     @Override
