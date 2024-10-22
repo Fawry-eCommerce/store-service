@@ -1,5 +1,6 @@
 package com.fawry.store.controllers;
 
+import com.fawry.store.dtos.ProductDto;
 import com.fawry.store.dtos.StoreDto;
 import com.fawry.store.entities.Store;
 import com.fawry.store.services.store.StoreService;
@@ -44,6 +45,12 @@ public class StoreController {
         storeService.deleteStore(id);
     }
 
-    // TODO: handle product search feature
+    @GetMapping("{storeId}/products")
+    public Page<ProductDto> searchProducts(@PathVariable Long storeId,
+                                           @RequestParam(defaultValue = "") String name,
+                                           @RequestParam(defaultValue = "") String category,
+                                           Pageable pageable) {
+        return storeService.searchProducts(storeId, name, category, pageable);
+    }
 
 }

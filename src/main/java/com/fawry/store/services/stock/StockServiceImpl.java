@@ -1,6 +1,6 @@
 package com.fawry.store.services.stock;
 
-import com.fawry.store.clients.productclient.ProductClient;
+import com.fawry.store.clients.ProductClient;
 import com.fawry.store.dtos.ConsumptionRequestDto;
 import com.fawry.store.enums.Messages;
 import com.fawry.store.dtos.StockDto;
