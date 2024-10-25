@@ -17,4 +17,8 @@ public interface ProductClient {
     boolean checkProductExists(@PathVariable Long productId);
     @GetMapping("/products/details")
     Page<ProductDto> getProductsByIds(@RequestParam List<Long> ids, Pageable pageable);
+    @GetMapping("/products/search")
+    List<ProductDto> searchProducts(@RequestParam(defaultValue = "") String name,
+                                             @RequestParam(defaultValue = "") String category,
+                                             @RequestParam(defaultValue = "") String code);
 }

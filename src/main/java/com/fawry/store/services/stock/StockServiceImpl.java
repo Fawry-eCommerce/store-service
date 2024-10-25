@@ -2,6 +2,7 @@ package com.fawry.store.services.stock;
 
 import com.fawry.store.clients.ProductClient;
 import com.fawry.store.dtos.ConsumptionRequestDto;
+import com.fawry.store.dtos.ProductDto;
 import com.fawry.store.dtos.StockDto;
 import com.fawry.store.entities.Stock;
 import com.fawry.store.entities.Store;
@@ -15,6 +16,10 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -79,6 +84,25 @@ public class StockServiceImpl implements StockService {
     @Override
     public Stock getStockByProductIdAndStoreId(Long productId, Long storeId) {
         return stockRepository.findByProductIdAndStoreId(productId, storeId);
+    }
+
+    @Override
+    public List<ProductDto> searchProducts(Long storeId, String name, String category, String code) {
+        Store store = storeService.getStore(storeId);
+        Set<Long> productIds = store.getStocks().stream()
+                .map(Stock::getProductId)
+                .collect(Collectors.toSet());
+
+        List<ProductDto> productsPage = productClient.searchProducts(name, category, code);
+
+        return productsPage.stream()
+                .filter(product -> productIds.contains(product.id()))
+                .toList();
+    }
+
+    @Override
+    public boolean isStockExistsByStoreIdAndProductId(Long storeId, Long productId) {
+        return stockRepository.existsByStoreIdAndProductId(storeId, productId);
     }
 
     private void validateProductExists(Long productId) {

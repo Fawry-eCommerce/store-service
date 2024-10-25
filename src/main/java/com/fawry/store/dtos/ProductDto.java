@@ -9,8 +9,8 @@ public record ProductDto(
         String sku,
         String code,
         double price,
-        String imageUrl,
+        String imageURL,
         String description,
-        String categoryModel
+        CategoryDto categoryModel
 ) {
 }

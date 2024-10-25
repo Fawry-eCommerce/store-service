@@ -1,6 +1,5 @@
 package com.fawry.store.controllers;
 
-import com.fawry.store.dtos.ProductDto;
 import com.fawry.store.dtos.StoreDto;
 import com.fawry.store.services.store.StoreService;
 import jakarta.validation.Valid;
@@ -42,14 +41,6 @@ public class StoreController {
     @DeleteMapping("{id}")
     public void deleteStore(@PathVariable Long id) {
         storeService.deleteStore(id);
-    }
-
-    @GetMapping("{storeId}/products")
-    public Page<ProductDto> searchProducts(@PathVariable Long storeId,
-                                           @RequestParam(defaultValue = "") String name,
-                                           @RequestParam(defaultValue = "") String category,
-                                           Pageable pageable) {
-        return storeService.searchProducts(storeId, name, category, pageable);
     }
 
 }
