@@ -1,5 +1,6 @@
 package com.fawry.store.dtos;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,6 +8,8 @@ import lombok.Data;
 @Builder
 public class StoreDto {
     private Long id;
+    @NotBlank(message = "Name is required")
     private String name;
+    @NotBlank(message = "Location is required")
     private String location;
 }

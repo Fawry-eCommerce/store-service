@@ -43,16 +43,19 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public StoreDto createStore(Store store) {
+    public StoreDto createStore(StoreDto store) {
         boolean isStoreExists = checkStoreExists(store.getName(), store.getLocation());
         if (isStoreExists) {
             throw new IllegalArgumentException(Messages.STORE_ALREADY_EXISTS.getMessage());
         }
-        return storeMapper.toDto(storeRepository.save(store));
+        Store newStore = storeMapper.toEntity(store);
+        return storeMapper.toDto(
+                storeRepository.save(newStore)
+        );
     }
 
     @Override
-    public StoreDto updateStore(Long id, Store store) {
+    public StoreDto updateStore(Long id, StoreDto store) {
         Store existingStore = getStore(id);
         existingStore.setName(store.getName());
         existingStore.setLocation(store.getLocation());

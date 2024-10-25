@@ -2,7 +2,6 @@ package com.fawry.store.controllers;
 
 import com.fawry.store.dtos.ProductDto;
 import com.fawry.store.dtos.StoreDto;
-import com.fawry.store.entities.Store;
 import com.fawry.store.services.store.StoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +30,12 @@ public class StoreController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StoreDto createStore(@Valid @RequestBody Store store) {
+    public StoreDto createStore(@Valid @RequestBody StoreDto store) {
         return storeService.createStore(store);
     }
 
     @PutMapping("{id}")
-    public StoreDto updateStore(@PathVariable Long id, @Valid @RequestBody Store store) {
+    public StoreDto updateStore(@PathVariable Long id, @Valid @RequestBody StoreDto store) {
         return storeService.updateStore(id, store);
     }
 

@@ -12,8 +12,8 @@ public interface StoreService {
     Page<StoreDto> getAllStores(Pageable pageable);
     Store getStore(Long id);
     StoreDto getStoreById(Long id);
-    StoreDto createStore(Store store);
-    StoreDto updateStore(Long id, Store store);
+    StoreDto createStore(StoreDto store);
+    StoreDto updateStore(Long id, StoreDto store);
     void deleteStore(Long id);
     boolean checkStoreExists(String name, String location);
     Page<ProductDto> searchProducts(Long storeId, String name, String category, Pageable pageable);
