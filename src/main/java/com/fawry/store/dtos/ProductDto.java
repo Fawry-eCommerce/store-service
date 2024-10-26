@@ -11,6 +11,7 @@ public record ProductDto(
         double price,
         String imageURL,
         String description,
-        CategoryDto categoryModel
+        CategoryDto categoryModel,
+        int stockQuantity
 ) {
 }

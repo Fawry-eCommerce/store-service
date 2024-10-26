@@ -97,7 +97,21 @@ public class StockServiceImpl implements StockService {
 
         return productsPage.stream()
                 .filter(product -> productIds.contains(product.id()))
-                .toList();
+                .filter((product) -> product.name().contains(name) && product.code().contains(code))
+                .map(product -> {
+                    Stock stock = getStockByProductIdAndStoreId(product.id(), storeId);
+                    return new ProductDto(
+                            product.id(),
+                            product.name(),
+                            product.sku(),
+                            product.code(),
+                            product.price(),
+                            product.imageURL(),
+                            product.description(),
+                            product.categoryModel(),
+                            stock.getQuantity()
+                    );
+                }).toList();
     }
 
     @Override
