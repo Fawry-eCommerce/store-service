@@ -10,7 +10,9 @@ import com.fawry.store.services.store.StoreService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,7 +45,8 @@ public class ConsumptionServiceImpl implements ConsumptionService {
 
     @Override
     public Page<StoreHistoryDto> getProductConsumptionByStoreId(Pageable pageable, Long storeId) {
-        return storeHistoryRepository.getStoreHistoriesByStoreId(pageable, storeId)
+        Pageable sortedByDate = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").descending());
+        return storeHistoryRepository.getStoreHistoriesByStoreId(sortedByDate, storeId)
                 .map(consumptionMapper::toDto);
     }
 

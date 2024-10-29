@@ -15,15 +15,15 @@ public class SecurityInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)  {
-        String token = request.getHeader("Authorization");
-        if (token == null || token.isEmpty()) {
-            throw new UnauthorizedException();
-        }
-
-//         if (!authProxy.hasAnyRole("SUPER", "ADVANCED", "NORMAL", token)) {
-//             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//             return false;
-//         }
+//        String token = request.getHeader("Authorization");
+//        if (token == null || token.isEmpty()) {
+//            throw new UnauthorizedException();
+//        }
+//
+////         if (!authProxy.hasAnyRole("SUPER", "ADVANCED", "NORMAL", token)) {
+////             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+////             return false;
+////         }
 
         return true;
     }
