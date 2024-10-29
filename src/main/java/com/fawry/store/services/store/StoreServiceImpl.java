@@ -39,21 +39,17 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreDto createStore(StoreDto store) {
-        boolean isStoreExists = checkStoreExists(store.getName(), store.getLocation());
-        if (isStoreExists) {
+        if (checkStoreExists(store.getName(), store.getLocation())) {
             throw new IllegalArgumentException(Messages.STORE_ALREADY_EXISTS.getMessage());
         }
         Store newStore = storeMapper.toEntity(store);
-        return storeMapper.toDto(
-                storeRepository.save(newStore)
-        );
+        return storeMapper.toDto(storeRepository.save(newStore));
     }
 
     @Override
     public StoreDto updateStore(Long id, StoreDto store) {
         Store existingStore = getStore(id);
-        existingStore.setName(store.getName());
-        existingStore.setLocation(store.getLocation());
+        updateStoreDetails(existingStore, store);
         return storeMapper.toDto(storeRepository.save(existingStore));
     }
 
@@ -67,4 +63,8 @@ public class StoreServiceImpl implements StoreService {
         return storeRepository.existsByNameAndLocation(name, location);
     }
 
+    private void updateStoreDetails(Store existingStore, StoreDto store) {
+        existingStore.setName(store.getName());
+        existingStore.setLocation(store.getLocation());
+    }
 }

@@ -49,14 +49,7 @@ public class StockServiceImpl implements StockService {
             stock.setQuantity(stock.getQuantity() + stockDto.getQuantity());
         }
         stock = stockRepository.save(stock);
-        consumptionService.addProductConsumption(
-                ConsumptionRequestDto.builder()
-                        .storeId(store.getId())
-                        .productId(stock.getProductId())
-                        .quantity(stock.getQuantity())
-                        .consumerEmail(consumerEmail)
-                        .build()
-        );
+        recordConsumption(consumerEmail, stock, store);
         return stockMapper.toDto(stock);
     }
 
@@ -69,15 +62,10 @@ public class StockServiceImpl implements StockService {
     @Override
     @Transactional
     public void consumeProduct(ConsumptionRequestDto consumptionRequestDto) {
-        checkProductStock(
-                consumptionRequestDto.productId(),
-                consumptionRequestDto.storeId(),
-                consumptionRequestDto.quantity()
-        );
+        checkProductStock(consumptionRequestDto.productId(), consumptionRequestDto.storeId(),  consumptionRequestDto.quantity());
         Stock stock = getStockByProductIdAndStoreId(consumptionRequestDto.productId(), consumptionRequestDto.storeId());
         stock.setQuantity(stock.getQuantity() - consumptionRequestDto.quantity());
         saveStock(stock);
-
         consumptionService.consumeProduct(consumptionRequestDto);
     }
 
@@ -124,6 +112,17 @@ public class StockServiceImpl implements StockService {
         if (!isProductExists) {
             throw new EntityNotFoundException(Messages.PRODUCT_NOT_FOUND.getMessage());
         }
+    }
+
+    private void recordConsumption(String consumerEmail, Stock stock, Store store) {
+        consumptionService.addProductConsumption(
+                ConsumptionRequestDto.builder()
+                        .storeId(store.getId())
+                        .productId(stock.getProductId())
+                        .quantity(stock.getQuantity())
+                        .consumerEmail(consumerEmail)
+                        .build()
+        );
     }
 
 }
