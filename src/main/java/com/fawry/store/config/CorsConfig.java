@@ -1,4 +1,4 @@
-package com.fawry.store.config.web;
+package com.fawry.store.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

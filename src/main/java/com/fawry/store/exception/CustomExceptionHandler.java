@@ -75,6 +75,16 @@ public class CustomExceptionHandler {
         return generateExceptionResponseEntity(e, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ExceptionMessage> handleUnauthorizedException(UnauthorizedException e) {
+        return generateExceptionResponseEntity(e, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UnauthenticatedException.class)
+    public ResponseEntity<ExceptionMessage> handleUnauthenticatedException(UnauthenticatedException e) {
+        return generateExceptionResponseEntity(e, HttpStatus.FORBIDDEN);
+    }
+
     private ResponseEntity<ExceptionMessage> generateExceptionResponseEntity(Exception e, HttpStatus status) {
         ExceptionMessage errorBody = new ExceptionMessage(
                 status.value(),
