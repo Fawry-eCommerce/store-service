@@ -15,4 +15,5 @@ public interface StockService {
     Stock getStockByProductIdAndStoreId(Long productId, Long storeId);
     List<ProductDto> searchProducts(Long storeId, String name, String category, String code);
     boolean isStockExistsByStoreIdAndProductId(Long storeId, Long productId);
+    void checkoutProductsOutOfStock(List<StockDto> stocks);
 }

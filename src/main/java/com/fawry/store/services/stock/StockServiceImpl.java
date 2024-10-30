@@ -107,6 +107,13 @@ public class StockServiceImpl implements StockService {
         return stockRepository.existsByStoreIdAndProductId(storeId, productId);
     }
 
+    @Override
+    public void checkoutProductsOutOfStock(List<StockDto> stocks) {
+        stocks.forEach(stockDto ->
+            checkProductStock(stockDto.getProductId(), stockDto.getStoreId(), stockDto.getQuantity())
+        );
+    }
+
     private void validateProductExists(Long productId) {
         boolean isProductExists = productClient.checkProductExists(productId);
         if (!isProductExists) {

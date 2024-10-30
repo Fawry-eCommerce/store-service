@@ -29,6 +29,11 @@ public class StockController {
         stockService.consumeProduct(consumptionRequestDto);
     }
 
+    @PostMapping("validate")
+    public void validateStock(@Valid @RequestBody StockDto stockDto) {
+        stockService.checkProductStock(stockDto.getProductId(), stockDto.getStoreId(), stockDto.getQuantity());
+    }
+
     @GetMapping("search-products")
     public List<ProductDto> searchProducts(@RequestParam(defaultValue = "") Long storeId,
                                            @RequestParam(defaultValue = "") String name,
