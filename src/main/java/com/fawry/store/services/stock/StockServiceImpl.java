@@ -1,9 +1,7 @@
 package com.fawry.store.services.stock;
 
 import com.fawry.store.clients.ProductClient;
-import com.fawry.store.dtos.ConsumptionRequestDto;
-import com.fawry.store.dtos.ProductDto;
-import com.fawry.store.dtos.StockDto;
+import com.fawry.store.dtos.*;
 import com.fawry.store.entities.Stock;
 import com.fawry.store.entities.Store;
 import com.fawry.store.enums.Messages;
@@ -112,6 +110,18 @@ public class StockServiceImpl implements StockService {
         stocks.forEach(stockDto ->
             checkProductStock(stockDto.getProductId(), stockDto.getStoreId(), stockDto.getQuantity())
         );
+    }
+
+    @Override
+    public List<ConsumeProductStockResponse> consumeProducts(List<ConsumeProductStockRequest> consumeProductStockRequests) {
+        return consumeProductStockRequests.stream()
+                .map(consumeProductStockRequest -> {
+                    Stock stock = getStockByProductIdAndStoreId(consumeProductStockRequest.getProductId(), consumeProductStockRequest.getStoreId());
+                    if (stock == null || stock.getQuantity() < consumeProductStockRequest.getQuantity()) {
+                        return ConsumeProductStockResponse.builder().isAvailable(false).availableQuantity(0).build();
+                    }
+                    return ConsumeProductStockResponse.builder().isAvailable(true).availableQuantity(stock.getQuantity()).build();
+                }).toList();
     }
 
     private void validateProductExists(Long productId) {

@@ -1,8 +1,6 @@
 package com.fawry.store.controllers;
 
-import com.fawry.store.dtos.ConsumptionRequestDto;
-import com.fawry.store.dtos.ProductDto;
-import com.fawry.store.dtos.StockDto;
+import com.fawry.store.dtos.*;
 import com.fawry.store.services.stock.StockService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +28,8 @@ public class StockController {
     }
 
     @PostMapping("validate")
-    public void validateStock(@Valid @RequestBody StockDto stockDto) {
-        stockService.checkProductStock(stockDto.getProductId(), stockDto.getStoreId(), stockDto.getQuantity());
+    public List<ConsumeProductStockResponse> validateStock(@Valid @RequestBody List<ConsumeProductStockRequest> stockRequests) {
+        return stockService.consumeProducts(stockRequests);
     }
 
     @GetMapping("search-products")

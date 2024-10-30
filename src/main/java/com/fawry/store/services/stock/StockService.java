@@ -1,8 +1,6 @@
 package com.fawry.store.services.stock;
 
-import com.fawry.store.dtos.ConsumptionRequestDto;
-import com.fawry.store.dtos.ProductDto;
-import com.fawry.store.dtos.StockDto;
+import com.fawry.store.dtos.*;
 import com.fawry.store.entities.Stock;
 
 import java.util.List;
@@ -16,4 +14,5 @@ public interface StockService {
     List<ProductDto> searchProducts(Long storeId, String name, String category, String code);
     boolean isStockExistsByStoreIdAndProductId(Long storeId, Long productId);
     void checkoutProductsOutOfStock(List<StockDto> stocks);
+    List<ConsumeProductStockResponse> consumeProducts(List<ConsumeProductStockRequest> consumeProductStockRequests);
 }
